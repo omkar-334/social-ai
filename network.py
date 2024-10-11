@@ -3,10 +3,11 @@ import asyncio
 from colors import printpost, printreply
 
 
+# TODO - Integrate both network functionalities
+# Use this class for the terminal
 class Network:
     def __init__(self, users):
         self.users = users
-        self.posts = []
         self.postsdict = {}
 
     async def simulate_network(self):
@@ -20,7 +21,6 @@ class Network:
 
             post = await user.post()
             if post:
-                self.posts.append(post)
                 self.postsdict[post.id] = post
                 printpost(user, post)
 
@@ -36,3 +36,34 @@ class Network:
         if reply:
             post.replies.append(reply)
             printreply(user, post, reply)
+
+
+# Use this class for the gradio app
+class AppNetwork:
+    def __init__(self, users):
+        self.users = users
+        self.posts_dict = {}
+        self.running = True
+
+    async def start(self):
+        while self.running:
+            for user in self.users:
+                post_interval = user.get_post_interval()
+                await asyncio.sleep(post_interval)
+                if not self.running:
+                    break
+
+                post = await user.post()
+                self.posts_dict[post.id] = post
+                printpost(user, post)
+                yield post
+
+                for replying_user in self.users:
+                    if replying_user != user:
+                        reply = await replying_user.reply(post)
+                        post.replies.append(reply)
+                        printreply(user, post, reply)
+                        yield reply
+
+    async def stop(self):
+        self.running = False

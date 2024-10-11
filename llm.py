@@ -1,4 +1,5 @@
 import random
+import re
 
 from dotenv import load_dotenv
 
@@ -90,6 +91,16 @@ def create_args(user, post=True):
         "frequency_penalty": frequency_penalty,
         "presence_penalty": presence_penalty,
     }
+
+
+def clean(text):
+    try:
+        text = text.strip().strip('"').strip("'")
+        sentences = re.findall(r"[^.!?]+[.!?]", text)
+        text = "".join(sentences)
+    except Exception:
+        pass
+    return text
 
 
 # def simulate_agents(agents, posts):

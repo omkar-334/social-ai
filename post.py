@@ -1,11 +1,10 @@
 import asyncio
-import uuid
 from datetime import datetime
 
 
 class Post:
     def __init__(self, author, content):
-        self.id = uuid.uuid4()
+        self.id = f"{author} - {content[:25]}"
         self.author = author
         self.content = content
         self.replies = []

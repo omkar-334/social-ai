@@ -1,6 +1,6 @@
 import random
 
-from llm import create_args, llm
+from llm import clean, create_args, llm
 from post import Post, Reply
 from prompts import post_prompt, reply_prompt, system_prompt
 
@@ -44,7 +44,7 @@ class User:
         USER_PROMPT = post_prompt(self, args["max_tokens"])
 
         response = await llm(SYSTEM_PROMPT, USER_PROMPT, args)
-        post = Post(self.username, response)
+        post = Post(self.username, clean(response))
         return post
 
     async def reply(self, post):
@@ -54,7 +54,7 @@ class User:
         USER_PROMPT = reply_prompt(self, post, args["max_tokens"])
 
         response = await llm(SYSTEM_PROMPT, USER_PROMPT, args)
-        reply = Reply(self.username, response)
+        reply = Reply(self.username, clean(response))
         return reply
 
     def get_post_interval(self):

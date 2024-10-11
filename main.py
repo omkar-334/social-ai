@@ -31,9 +31,10 @@ users = [
     ),
 ]
 
-network = Network(users)
 
-asyncio.run(network.simulate_network())
+if __name__ == "__main__":
+    network = Network(users)
+    asyncio.run(network.simulate_network())
 
 
 # User(
