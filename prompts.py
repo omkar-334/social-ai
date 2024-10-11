@@ -45,7 +45,7 @@ def system_prompt(user):
     )
 
     prompt = f"""
-    You are {user.username}.
+    You are {user.name}.
     You are described as: {user.bio}.
     {interest_prompt}
     Your communication style is {user.communication_style}.

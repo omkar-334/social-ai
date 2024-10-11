@@ -22,7 +22,7 @@ class Network:
             post = await user.post()
             if post.content:
                 self.postsdict[post.id] = post
-                printpost(user, post)
+                printpost(post)
 
             reply_tasks = [
                 self.user_reply_cycle(replying_user, post)
@@ -35,7 +35,7 @@ class Network:
         reply = await user.reply(post)
         if reply.content:
             post.replies.append(reply)
-            printreply(user, post, reply)
+            printreply(post, reply)
 
 
 # Use this class for the gradio app
@@ -54,16 +54,18 @@ class AppNetwork:
                     break
 
                 post = await user.post()
-                self.posts_dict[post.id] = post
-                printpost(user, post)
-                yield post
+                if post.content:
+                    self.posts_dict[post.id] = post
+                    printpost(post)
+                    yield post
 
                 for replying_user in self.users:
                     if replying_user != user:
                         reply = await replying_user.reply(post, post.id)
-                        post.replies.append(reply)
-                        printreply(replying_user, post, reply)
-                        yield reply
+                        if reply.content:
+                            post.replies.append(reply)
+                            printreply(post, reply)
+                            yield reply
 
     async def stop(self):
         self.running = False

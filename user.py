@@ -1,15 +1,18 @@
 import random
 
+from colors import user_colors
 from llm import clean, create_args, llm
 from post import Post, Reply
 from prompts import post_prompt, reply_prompt, system_prompt
 
 
 class User:
-    def __init__(self, username, bio="", interests=[]):
-        self.username = username
+    def __init__(self, name, bio="", interests=[], icon_url=None):
+        self.name = name
         self.bio = bio
         self.interests = interests
+        self.icon_url = icon_url
+        self.color = random.choice(user_colors)
         self.posts = []
         self.communication_style = random.choice(
             [
@@ -44,7 +47,7 @@ class User:
         USER_PROMPT = post_prompt(self, args["max_tokens"])
 
         response = await llm(SYSTEM_PROMPT, USER_PROMPT, args)
-        post = Post(self.username, clean(response))
+        post = Post(self, clean(response))
         return post
 
     async def reply(self, post, postid):
@@ -54,7 +57,7 @@ class User:
         USER_PROMPT = reply_prompt(self, post, args["max_tokens"])
 
         response = await llm(SYSTEM_PROMPT, USER_PROMPT, args)
-        reply = Reply(self.username, clean(response), postid)
+        reply = Reply(self, clean(response), postid)
         return reply
 
     def get_post_interval(self):

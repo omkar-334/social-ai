@@ -5,8 +5,8 @@ Create a `.env` file and enter `API_KEY` and `BASE_URL`.
 Usage - `python app.py`  
 Start Gradio app  
 
-###### users.py
-Specify the usernames, user bios and interests.  
+###### profiles.py
+Specify the `name`,`bio` and `interests` (`icon_url` is optional) for each profile.
 ###### models.txt
 Specify the models that you want to use here.
 

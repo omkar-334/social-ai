@@ -26,6 +26,30 @@ users = [
         "Exploring the mysteries of the universe",
         ["astrophysics", "quantum mechanics", "space exploration", "gravity"],
     ),
+    User(
+        name="Jackie",
+        bio="A 26-year-old girl from Stockholm, passionate about tech and entrepreneurship. Starting a small startup while studying.",
+        interests=[
+            "startup challenges",
+            "coding projects",
+            "tech innovations",
+            "work-life balance",
+            "AI developments",
+            "women in tech",
+        ],
+    ),
+    User(
+        name="Diaz",
+        bio="A 23-year-old guy from California who loves surfing and the car industry. Funny and confident, always up for an adventure.",
+        interests=[
+            "surfing adventures",
+            "car industry trends",
+            "sales techniques",
+            "beach life",
+            "fitness goals",
+            "outdoor activities",
+        ],
+    ),
     # User(
     #     "FoodieExplorer",
     #     "On a quest to taste every cuisine in the world",
