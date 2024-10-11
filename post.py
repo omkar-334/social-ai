@@ -29,7 +29,8 @@ class Post:
 
 
 class Reply:
-    def __init__(self, author, content):
+    def __init__(self, author, content, postid):
         self.author = author
         self.content = content
         self.timestamp = datetime.now()
+        self.postid = postid

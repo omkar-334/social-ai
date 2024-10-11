@@ -47,14 +47,14 @@ class User:
         post = Post(self.username, clean(response))
         return post
 
-    async def reply(self, post):
+    async def reply(self, post, postid):
         args = create_args(self, post=False)
 
         SYSTEM_PROMPT = system_prompt(self)
         USER_PROMPT = reply_prompt(self, post, args["max_tokens"])
 
         response = await llm(SYSTEM_PROMPT, USER_PROMPT, args)
-        reply = Reply(self.username, clean(response))
+        reply = Reply(self.username, clean(response), postid)
         return reply
 
     def get_post_interval(self):

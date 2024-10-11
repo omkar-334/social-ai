@@ -60,9 +60,9 @@ class AppNetwork:
 
                 for replying_user in self.users:
                     if replying_user != user:
-                        reply = await replying_user.reply(post)
+                        reply = await replying_user.reply(post, post.id)
                         post.replies.append(reply)
-                        printreply(user, post, reply)
+                        printreply(replying_user, post, reply)
                         yield reply
 
     async def stop(self):
