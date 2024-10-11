@@ -1,24 +1,29 @@
 import gradio as gr
 
 import main
-from colors import colors
 from network import AppNetwork
 from post import Post
 
 simulation = AppNetwork(main.users)
 
 
+def format_message(username, content, icon_url="icon.png"):
+    return f"""
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <img src="{icon_url}" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 10px;">
+        <div style="display: flex; flex-direction: column;">
+            <p style="color: yellow; font-size: 16px; margin: 0; font-weight: bold; line-height: 1;">{username}</p>
+            <p style="margin: 4px 0 0 0; font-size: 14px; line-height: 1.3;">{content}</p>
+        </div>
+    </div>
+    """
+
+
 async def update_interface(posts_display):
     post_ids = []
     async for item in simulation.start():
         if isinstance(item, Post):
-            posts_display.append(
-                (
-                    f"{colors['CYELLOW']}{item.author}{colors['CEND']}"
-                    + f": {item.content}",
-                    None,
-                )
-            )
+            posts_display.append((format_message(item.author, item.content), None))
             post_ids.append(item.id)
         yield posts_display, gr.update(choices=post_ids)
 
@@ -27,11 +32,7 @@ def get_post_replies(post_id):
     if post_id:
         post = simulation.posts_dict[post_id]
         return [
-            (
-                f"{colors['CBLUE']}{reply.author}{colors['CEND']}"
-                + f": {reply.content}",
-                None,
-            )
+            (format_message(reply.author, reply.content), None)
             for reply in post.replies
         ]
     return []
