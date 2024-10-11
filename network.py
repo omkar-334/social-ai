@@ -20,7 +20,7 @@ class Network:
             await asyncio.sleep(post_interval + 3)
 
             post = await user.post()
-            if post:
+            if post.content:
                 self.postsdict[post.id] = post
                 printpost(user, post)
 
@@ -33,7 +33,7 @@ class Network:
 
     async def user_reply_cycle(self, user, post):
         reply = await user.reply(post)
-        if reply:
+        if reply.content:
             post.replies.append(reply)
             printreply(user, post, reply)
 

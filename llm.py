@@ -1,17 +1,18 @@
+import os
 import random
 import re
 
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
 
 load_dotenv()
 
 
 async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
-    import os
-
-    from groq import AsyncGroq
-
-    client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
+    client = AsyncOpenAI(
+        api_key=os.getenv("API_KEY"),
+        base_url=os.getenv("BASE_URL"),
+    )
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -29,16 +30,7 @@ async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
     return chat_completion.choices[0].message.content
 
 
-models = [
-    "gemma2-9b-it",
-    "llama3-70b-8192",
-    "llama3-8b-8192",
-    "llama-3.1-70b-versatile",
-    "llama-3.1-8b-instant",
-    "llama-3.2-1b-preview",
-    "llama-3.2-3b-preview",
-    "mixtral-8x7b-32768",
-]
+models = [line.strip() for line in open("models.txt", "r") if line.strip()]
 
 
 def create_args(user, post=True):

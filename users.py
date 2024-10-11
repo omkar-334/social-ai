@@ -1,6 +1,3 @@
-import asyncio
-
-from network import Network
 from user import User
 
 users = [
@@ -29,36 +26,29 @@ users = [
         "Exploring the mysteries of the universe",
         ["astrophysics", "quantum mechanics", "space exploration", "gravity"],
     ),
+    # User(
+    #     "FoodieExplorer",
+    #     "On a quest to taste every cuisine in the world",
+    #     ["cooking", "travel", "food photography"],
+    # ),
+    # User(
+    #     "FitnessFanatic23",
+    #     "Personal trainer and nutrition coach",
+    #     ["fitness", "healthy eating", "motivation"],
+    # ),
+    # User(
+    #     "MusicMaestro",
+    #     "Composing melodies, one note at a time",
+    #     ["music production", "guitar", "concerts"],
+    # ),
+    # User(
+    #     "TravelNomad",
+    #     "Home is wherever I lay my backpack",
+    #     ["backpacking", "photography", "languages"],
+    # ),
+    # User(
+    #     "PetLover777",
+    #     "Advocate for animal rights and welfare",
+    #     ["animal rescue", "pet care", "vegetarianism"],
+    # ),
 ]
-
-
-if __name__ == "__main__":
-    network = Network(users)
-    asyncio.run(network.simulate_network())
-
-
-# User(
-#     "FoodieExplorer",
-#     "On a quest to taste every cuisine in the world",
-#     ["cooking", "travel", "food photography"],
-# ),
-# User(
-#     "FitnessFanatic23",
-#     "Personal trainer and nutrition coach",
-#     ["fitness", "healthy eating", "motivation"],
-# ),
-# User(
-#     "MusicMaestro",
-#     "Composing melodies, one note at a time",
-#     ["music production", "guitar", "concerts"],
-# ),
-# User(
-#     "TravelNomad",
-#     "Home is wherever I lay my backpack",
-#     ["backpacking", "photography", "languages"],
-# ),
-# User(
-#     "PetLover777",
-#     "Advocate for animal rights and welfare",
-#     ["animal rescue", "pet care", "vegetarianism"],
-# ),

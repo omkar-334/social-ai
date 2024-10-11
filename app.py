@@ -1,10 +1,10 @@
 import gradio as gr
 
-import main
 from network import AppNetwork
 from post import Post, Reply
+from users import users
 
-simulation = AppNetwork(main.users)
+simulation = AppNetwork(users)
 
 
 def format_message(username, content, is_reply=False, icon_url="icon.png"):
