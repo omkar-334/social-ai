@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Post:
     def __init__(self, author, content):
-        self.id = f"{author} - {content[:25]}"
+        self.id = f"{author.name}_{len(author.posts)+1}"
         self.author = author
         self.content = content
         self.replies = []

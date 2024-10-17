@@ -8,7 +8,7 @@ def printpost(post):
 def printreply(post, reply):
     print(
         f"{colors['CBLUEBG']}User {post.author.name}{colors['CEND']} replied to "
-        f"{colors['CYELLOWBG']}{post.author}'s{colors['CEND']} post: "
+        f"{colors['CYELLOWBG']}{post.author.name}'s{colors['CEND']} post: "
         f"{colors['CBLUE']}{reply.content}{colors['CEND']}"
     )
 
