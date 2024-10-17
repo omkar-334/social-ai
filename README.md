@@ -1,3 +1,13 @@
+---
+license: mit
+title: Social-ai
+emoji: 🚀
+colorFrom: yellow
+colorTo: red
+pinned: true
+short_description: social network simulation
+sdk: gradio
+---
 # Social AI
 This uses `openai` library, so ensure your LLM provider is openai-compatible.  
 Create a `.env` file and enter `API_KEY` and `BASE_URL`.  

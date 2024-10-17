@@ -5,6 +5,7 @@ import gradio as gr
 from network import AppNetwork
 from profiles import users
 
+users = {user.name: user for user in users}
 simulation = AppNetwork(users)
 
 
@@ -12,7 +13,11 @@ def format_message(item, is_reply=False):
     margin_left = "30px" if is_reply else "0"
     font_size = "14px" if is_reply else "16px"
 
-    icon_html = f'<img src="{item.author.icon_url}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 10px;">' if item.author.icon_url else ""
+    icon_html = (
+        f'<img src="{item.author.icon_url}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 10px;">'
+        if item.author.icon_url
+        else ""
+    )
 
     message_html = f"""
     <div style="display: flex; align-items: flex-start; margin-bottom: 10px; margin-left: {margin_left};">
@@ -41,7 +46,9 @@ async def create_post(selected_user):
 
 async def create_reply(post_id, selected_user):
     if selected_user == "All Users":
-        tasks = [simulation.create_reply(post_id, user_name) for user_name in users.keys()]
+        tasks = [
+            simulation.create_reply(post_id, user_name) for user_name in users.keys()
+        ]
         await asyncio.gather(*tasks)
     else:
         if selected_user == "Select User":
@@ -68,23 +75,35 @@ def update_interface():
 
 
 with gr.Blocks(css="#posts-container {height: 400px; overflow-y: auto;}") as app:
-    gr.Markdown("## Social Network Simulation\n\nDon't select a user if you want a random user.")
+    gr.Markdown(
+        "## Social Network Simulation\n\nDon't select a user if you want a random user."
+    )
     with gr.Row():
         with gr.Column(scale=2):
             posts_output = gr.HTML(elem_id="posts-container")
 
     with gr.Row():
         with gr.Column(scale=1):
-            post_user_dropdown = gr.Dropdown(choices=["Select User"] + list(users.keys()), label="Select User for Post")
+            post_user_dropdown = gr.Dropdown(
+                choices=["Select User"] + list(users.keys()),
+                label="Select User for Post",
+            )
             post_button = gr.Button("Create Post")
 
         with gr.Column(scale=1):
-            reply_post_id = gr.Textbox(label="Post ID to Reply To", placeholder="Enter Post ID")
-            reply_user_dropdown = gr.Dropdown(choices=["Select User"] + list(users.keys()) + ["All Users"], label="Select User for Reply")
+            reply_post_id = gr.Textbox(
+                label="Post ID to Reply To", placeholder="Enter Post ID"
+            )
+            reply_user_dropdown = gr.Dropdown(
+                choices=["Select User"] + list(users.keys()) + ["All Users"],
+                label="Select User for Reply",
+            )
             reply_button = gr.Button("Create Reply")
 
     post_button.click(create_post, inputs=post_user_dropdown, outputs=posts_output)
-    reply_button.click(create_reply, inputs=[reply_post_id, reply_user_dropdown], outputs=posts_output)
+    reply_button.click(
+        create_reply, inputs=[reply_post_id, reply_user_dropdown], outputs=posts_output
+    )
 
     app.queue()
 

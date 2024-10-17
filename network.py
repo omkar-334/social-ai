@@ -42,7 +42,7 @@ class LoopNetwork:
 # Use this class for the gradio app
 class AppNetwork:
     def __init__(self, users):
-        self.users = {user.name: user for user in users}
+        self.users = users
         self.posts_dict = {}
 
     async def create_post(self, username=None):
@@ -53,6 +53,7 @@ class AppNetwork:
         if user:
             post = await user.post()
             if post.content:
+                user.posts.append(post)
                 self.posts_dict[post.id] = post
                 printpost(post)
                 return post
