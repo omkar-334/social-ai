@@ -2,10 +2,10 @@ import asyncio
 import random
 
 from colors import printpost, printreply
+from post import Post, Reply
 
 
-# TODO - Integrate both network functionalities
-# Use this class for the terminal
+# Use this class for automatic generation
 class LoopNetwork:
     def __init__(self, users):
         self.users = users
@@ -39,13 +39,20 @@ class LoopNetwork:
             printreply(post, reply)
 
 
-# Use this class for the gradio app
+# Use this class for the manual generation
 class AppNetwork:
-    def __init__(self, users):
+    def __init__(self, users, human):
         self.users = users
+        self.human = human
         self.posts_dict = {}
 
-    async def create_post(self, username=None):
+    async def create_post(self, username=None, human_text=False):
+        if human_text:
+            post = Post(self.human, human_text)
+            self.human.posts.append(post)
+            self.posts_dict[post.id] = post
+            return post
+
         if not username:
             username = random.choice(list(self.users.keys()))
         user = self.users.get(username)
@@ -59,16 +66,24 @@ class AppNetwork:
                 return post
         return None
 
-    async def create_reply(self, post_id, username=None):
+    async def create_reply(self, post_id, username=None, human_text=None):
         if post_id in self.posts_dict:
             post = self.posts_dict[post_id]
-            if not username:
-                username = random.choice(list(self.users.keys()))
-            user = self.users.get(username)
-            if user:
-                reply = await user.reply(post, post.id)
-                if reply.content:
-                    post.replies.append(reply)
-                    printreply(post, reply)
-                    return reply
+        else:
+            return None
+
+        if human_text:
+            reply = Reply(self.human, human_text, post_id)
+            post.replies.append(reply)
+            return reply
+
+        if not username:
+            username = random.choice(list(self.users.keys()))
+        user = self.users.get(username)
+        if user:
+            reply = await user.reply(post, post.id)
+            if reply.content:
+                post.replies.append(reply)
+                printreply(post, reply)
+                return reply
         return None
