@@ -46,7 +46,7 @@ class AppNetwork:
         self.human = human
         self.posts_dict = {}
 
-    async def create_post(self, username=None, human_text=False):
+    async def create_post(self, username=None, human_text=False, model=None):
         if human_text:
             post = Post(self.human, human_text)
             self.human.posts.append(post)
@@ -58,7 +58,7 @@ class AppNetwork:
         user = self.users.get(username)
 
         if user:
-            post = await user.post()
+            post = await user.post(model)
             if post.content:
                 user.posts.append(post)
                 self.posts_dict[post.id] = post
@@ -66,7 +66,7 @@ class AppNetwork:
                 return post
         return None
 
-    async def create_reply(self, post_id, username=None, human_text=None):
+    async def create_reply(self, post_id, username=None, human_text=None, model=None):
         if post_id in self.posts_dict:
             post = self.posts_dict[post_id]
         else:
@@ -81,7 +81,7 @@ class AppNetwork:
             username = random.choice(list(self.users.keys()))
         user = self.users.get(username)
         if user:
-            reply = await user.reply(post, post.id)
+            reply = await user.reply(post, post.id, model)
             if reply.content:
                 post.replies.append(reply)
                 printreply(post, reply)

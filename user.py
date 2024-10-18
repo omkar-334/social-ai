@@ -1,7 +1,7 @@
 import random
 
 from colors import user_colors
-from llm import clean, create_args, llm
+from llm import clean, create_args, llm, models
 from post import Post, Reply
 from prompts import post_prompt, reply_prompt, system_prompt
 
@@ -13,6 +13,7 @@ class User:
         self.interests = interests
         self.icon_url = icon_url
         self.color = random.choice(user_colors)
+        self.model = random.choice(models)
         self.posts = []
         self.communication_style = random.choice(
             [
@@ -40,8 +41,9 @@ class User:
 
         return history
 
-    async def post(self):
-        args = create_args(self, post=True)
+    async def post(self, model=None):
+        print(model)
+        args = create_args(self, model, post=True)
 
         SYSTEM_PROMPT = system_prompt(self)
         USER_PROMPT = post_prompt(self, args["max_tokens"])
@@ -50,8 +52,8 @@ class User:
         post = Post(self, clean(response))
         return post
 
-    async def reply(self, post, postid):
-        args = create_args(self, post=False)
+    async def reply(self, post, postid, model=None):
+        args = create_args(self, model, post=False)
 
         SYSTEM_PROMPT = system_prompt(self)
         USER_PROMPT = reply_prompt(self, post, args["max_tokens"])

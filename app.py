@@ -2,6 +2,7 @@ import asyncio
 
 import gradio as gr
 
+from llm import openai_models
 from network import AppNetwork
 from profiles import human, users
 
@@ -37,30 +38,34 @@ def format_message(item, is_reply=False):
     return message_html
 
 
-async def create_post(selected_user=None, human_text=None):
+async def create_post(selected_user=None, human_text=None, model=None):
     if human_text:
         await simulation.create_post(human_text=human_text)
     else:
+        if model == "None":
+            model = None
         if selected_user == "Select User":
             selected_user = None
-        await simulation.create_post(selected_user)
+        await simulation.create_post(selected_user, model=model)
     return update_interface()
 
 
-async def create_reply(post_id, selected_user=None, human_text=None):
+async def create_reply(post_id, selected_user=None, human_text=None, model=None):
     if human_text:
         await simulation.create_reply(post_id, human_text=human_text)
     else:
+        if model == "None":
+            model = None
         if selected_user == "All Users":
             tasks = [
-                simulation.create_reply(post_id, user_name)
+                simulation.create_reply(post_id, user_name, model=model)
                 for user_name in users.keys()
             ]
             await asyncio.gather(*tasks)
         else:
             if selected_user == "Select User":
                 selected_user = None
-            await simulation.create_reply(post_id, selected_user)
+            await simulation.create_reply(post_id, selected_user, model=model)
     return update_interface()
 
 
@@ -82,10 +87,18 @@ def update_interface():
 
 
 with gr.Blocks(theme=gr.themes.Citrus()) as app:
-    gr.Markdown(
-        "<small>Copy the post ID to reply to a post<br>"
-        + "Don't select user if you want to post or reply to a post youself, or if you want a random user.</small>"
-    )
+    with gr.Row():
+        with gr.Column(scale=2):
+            gr.Markdown(
+                "<small>Copy the post ID to reply to a post<br>"
+                + "Don't select user if you want to post or reply to a post youself, or if you want a random user.</small>"
+            )
+        with gr.Column(scale=2):
+            model_dropdown = gr.Dropdown(
+                choices=["None"] + openai_models,
+                label="Select OpenAI Model for generation (optional)",
+            )
+
     with gr.Row():
         with gr.Column(scale=2):
             posts_output = gr.HTML(elem_id="posts-container")
@@ -111,11 +124,13 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
             reply_button = gr.Button("Create Reply")
 
     post_button.click(
-        create_post, inputs=[post_user_dropdown, post_user_input], outputs=posts_output
+        create_post,
+        inputs=[post_user_dropdown, post_user_input, model_dropdown],
+        outputs=posts_output,
     ).then(lambda: (None, None), outputs=[post_user_input, post_user_dropdown])
     reply_button.click(
         create_reply,
-        inputs=[reply_post_id, reply_user_dropdown, reply_user_input],
+        inputs=[reply_post_id, reply_user_dropdown, reply_user_input, model_dropdown],
         outputs=posts_output,
     ).then(
         lambda: (None, None, None),

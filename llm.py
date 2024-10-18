@@ -7,21 +7,28 @@ from openai import AsyncOpenAI
 
 load_dotenv()
 
+openai_models = [
+    "gpt-4o",
+    "gpt-4o-mini",
+    "gpt-4-turbo",
+    "gpt-4",
+    "gpt-3.5-turbo",
+    "o1-preview",
+    "o1-mini",
+]
+models = [line.strip() for line in open("models.txt", "r") if line.strip()]
+
 
 async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
-    client = AsyncOpenAI(
-        api_key=os.getenv("API_KEY"),
-        base_url=os.getenv("BASE_URL"),
-    )
-
+    client = AsyncOpenAI(api_key=args.pop("key"), base_url=args.pop("base_url"))
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
+    print(args["model"])
 
     chat_completion = await client.chat.completions.create(
         messages=messages,
-        model=random.choice(models),
         stop=None,
         stream=False,
         **args,
@@ -30,10 +37,16 @@ async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
     return chat_completion.choices[0].message.content
 
 
-models = [line.strip() for line in open("models.txt", "r") if line.strip()]
+def create_args(user, model=None, post=True):
+    print(model)
+    if model:
+        key = os.getenv("OPENAI_API_KEY")
+        base_url = "https://api.openai.com/v1"
+    else:
+        model = user.model
+        key = os.getenv("API_KEY")
+        base_url = os.getenv("BASE_URL")
 
-
-def create_args(user, post=True):
     communication_style = user.communication_style
     engagement_level = user.engagement_level
 
@@ -76,6 +89,9 @@ def create_args(user, post=True):
         temperature -= 0.1
 
     return {
+        "key": key,
+        "model": model,
+        "base_url": base_url,
         "temperature": max(0.1, min(temperature, 1.0)),
         # "top_p": top_p,
         # "top_k": top_k,

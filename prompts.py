@@ -10,6 +10,7 @@ def post_prompt(user, words):
     Be creative, and vary the content to explore different aspects of your interests. 
     Feel free to express a new angle or a fresh opinion on something you haven't discussed yet.
     Do not include hashtags, @ , mentions, markdown formatting, bold, italic, etc. Answer in plaintext.
+    Do not mention the title, Just write the post content. 
 
     """
 
@@ -17,15 +18,16 @@ def post_prompt(user, words):
 
 
 def reply_prompt(user, post, words):
-    #  The post's previous replies are:\n{post.construct_reply_history()}
     user_prompt = f"""
     You need to directly reply to a post.
     Make sure your reply is under {words} words.
     
     The post's content is - "{post.content}".
+    The post's previous replies are:\n{post.construct_reply_history()}
 
     Create a unique response directly related to the post's content, contributing something new to the conversation.
-    Ensure that your decision, reply (if you choose to reply) fits your communication style ({user.communication_style}). Be creative, and avoid repeating ideas that have already been discussed.
+    Ensure that your decision, reply (if you choose to reply) fits your communication style ({user.communication_style}). 
+    Be creative, and avoid repeating ideas that have already been discussed.
     Do not add "Re", the post's title, quotes or anything indicating to refer to the post. 
     """
     return user_prompt
