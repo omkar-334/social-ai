@@ -7,6 +7,8 @@ colorTo: red
 pinned: true
 short_description: social network simulation
 sdk: gradio
+sdk_version: 5.1.0
+python_version: 3.11
 ---
 # Social AI
 This uses `openai` library, so ensure your LLM provider is openai-compatible.  
