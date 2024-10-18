@@ -88,10 +88,7 @@ def update_interface():
         """
 
 
-with gr.Blocks(
-    theme=gr.themes.Citrus(),
-    css="#posts-container {height: 600px; overflow-y: auto;}",
-) as app:
+with gr.Blocks(theme=gr.themes.Citrus()) as app:
     with gr.Row():
         with gr.Column(scale=4):
             gr.Markdown(
@@ -143,7 +140,7 @@ with gr.Blocks(
         outputs=[reply_post_id, reply_user_input, reply_user_dropdown],
     )
 
-    app.queue()
+    app.load(update_interface, outputs=posts_output)
 
 if __name__ == "__main__":
     app.launch()
