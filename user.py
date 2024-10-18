@@ -42,7 +42,6 @@ class User:
         return history
 
     async def post(self, model=None):
-        print(model)
         args = create_args(self, model, post=True)
 
         SYSTEM_PROMPT = system_prompt(self)

@@ -42,10 +42,6 @@ async def create_post(selected_user=None, human_text=None, model=None):
     if human_text:
         await simulation.create_post(human_text=human_text)
     else:
-        if model == "None":
-            model = None
-        if selected_user == "Select User":
-            selected_user = None
         await simulation.create_post(selected_user, model=model)
     return update_interface()
 
@@ -54,8 +50,6 @@ async def create_reply(post_id, selected_user=None, human_text=None, model=None)
     if human_text:
         await simulation.create_reply(post_id, human_text=human_text)
     else:
-        if model == "None":
-            model = None
         if selected_user == "All Users":
             tasks = [
                 simulation.create_reply(post_id, user_name, model=model)
@@ -63,8 +57,6 @@ async def create_reply(post_id, selected_user=None, human_text=None, model=None)
             ]
             await asyncio.gather(*tasks)
         else:
-            if selected_user == "Select User":
-                selected_user = None
             await simulation.create_reply(post_id, selected_user, model=model)
     return update_interface()
 
@@ -88,14 +80,15 @@ def update_interface():
 
 with gr.Blocks(theme=gr.themes.Citrus()) as app:
     with gr.Row():
-        with gr.Column(scale=2):
+        with gr.Column(scale=4):
             gr.Markdown(
+                "<h3>Social Network simulation</h3>"
                 "<small>Copy the post ID to reply to a post<br>"
                 + "Don't select user if you want to post or reply to a post youself, or if you want a random user.</small>"
             )
         with gr.Column(scale=2):
             model_dropdown = gr.Dropdown(
-                choices=["None"] + openai_models,
+                choices=[""] + openai_models,
                 label="Select OpenAI Model for generation (optional)",
             )
 
@@ -107,7 +100,7 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
         with gr.Column(scale=1):
             post_user_input = gr.Textbox(label="Post anything yourself")
             post_user_dropdown = gr.Dropdown(
-                choices=["Select User"] + list(users.keys()),
+                choices=[""] + list(users.keys()),
                 label="Select User for Post",
             )
             post_button = gr.Button("Create Post")
@@ -118,7 +111,7 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
             )
             reply_user_input = gr.Textbox(label="Reply to the post yourself")
             reply_user_dropdown = gr.Dropdown(
-                choices=["Select User"] + list(users.keys()) + ["All Users"],
+                choices=[""] + list(users.keys()) + ["All Users"],
                 label="Select User for Reply",
             )
             reply_button = gr.Button("Create Reply")

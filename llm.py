@@ -25,7 +25,6 @@ async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    print(args["model"])
 
     chat_completion = await client.chat.completions.create(
         messages=messages,
@@ -38,7 +37,6 @@ async def llm(system_prompt: str, user_prompt: str, args: dict) -> str:
 
 
 def create_args(user, model=None, post=True):
-    print(model)
     if model:
         key = os.getenv("OPENAI_API_KEY")
         base_url = "https://api.openai.com/v1"
