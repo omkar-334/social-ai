@@ -38,11 +38,19 @@ def format_message(item, is_reply=False):
     return message_html
 
 
+def params(selected_user, model):
+    if model == "Random Model":
+        model = None
+    if selected_user == "Random User":
+        selected_user = None
+    return {"username": selected_user, "model": model}
+
+
 async def create_post(selected_user=None, human_text=None, model=None):
     if human_text:
         await simulation.create_post(human_text=human_text)
     else:
-        await simulation.create_post(selected_user, model=model)
+        await simulation.create_post(**params(selected_user, model))
     return update_interface()
 
 
@@ -52,19 +60,21 @@ async def create_reply(post_id, selected_user=None, human_text=None, model=None)
     else:
         if selected_user == "All Users":
             tasks = [
-                simulation.create_reply(post_id, user_name, model=model)
+                simulation.create_reply(post_id, **params(user_name, model))
                 for user_name in users.keys()
             ]
             await asyncio.gather(*tasks)
         else:
-            await simulation.create_reply(post_id, selected_user, model=model)
+            await simulation.create_reply(post_id, **params(selected_user, model))
     return update_interface()
 
 
 def update_interface():
     content = []
 
-    for post in simulation.posts_dict.values():
+    for post in sorted(
+        simulation.posts_dict.values(), key=lambda x: x.timestamp, reverse=True
+    ):
         content.append(format_message(post))
         for reply in post.replies:
             content.append(format_message(reply, is_reply=True))
@@ -78,7 +88,10 @@ def update_interface():
         """
 
 
-with gr.Blocks(theme=gr.themes.Citrus()) as app:
+with gr.Blocks(
+    theme=gr.themes.Citrus(),
+    css="#posts-container {height: 600px; overflow-y: auto;}",
+) as app:
     with gr.Row():
         with gr.Column(scale=4):
             gr.Markdown(
@@ -88,7 +101,7 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
             )
         with gr.Column(scale=2):
             model_dropdown = gr.Dropdown(
-                choices=[""] + openai_models,
+                choices=["Random Model"] + openai_models,
                 label="Select OpenAI Model for generation (optional)",
             )
 
@@ -100,7 +113,7 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
         with gr.Column(scale=1):
             post_user_input = gr.Textbox(label="Post anything yourself")
             post_user_dropdown = gr.Dropdown(
-                choices=[""] + list(users.keys()),
+                choices=["Random User"] + list(users.keys()),
                 label="Select User for Post",
             )
             post_button = gr.Button("Create Post")
@@ -111,7 +124,7 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
             )
             reply_user_input = gr.Textbox(label="Reply to the post yourself")
             reply_user_dropdown = gr.Dropdown(
-                choices=[""] + list(users.keys()) + ["All Users"],
+                choices=["Random User"] + list(users.keys()) + ["All Users"],
                 label="Select User for Reply",
             )
             reply_button = gr.Button("Create Reply")
@@ -120,13 +133,13 @@ with gr.Blocks(theme=gr.themes.Citrus()) as app:
         create_post,
         inputs=[post_user_dropdown, post_user_input, model_dropdown],
         outputs=posts_output,
-    ).then(lambda: (None, None), outputs=[post_user_input, post_user_dropdown])
+    ).then(lambda: (None, "Random User"), outputs=[post_user_input, post_user_dropdown])
     reply_button.click(
         create_reply,
         inputs=[reply_post_id, reply_user_dropdown, reply_user_input, model_dropdown],
         outputs=posts_output,
     ).then(
-        lambda: (None, None, None),
+        lambda: (None, None, "Random User"),
         outputs=[reply_post_id, reply_user_input, reply_user_dropdown],
     )
 
