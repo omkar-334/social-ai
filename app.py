@@ -82,10 +82,9 @@ def update_interface():
 
 
 with gr.Blocks(theme=gr.themes.Citrus()) as app:
-    gr.Markdown("## Social Network Simulation")
-    gr.Markdown("Copy the post ID to reply to a post")
     gr.Markdown(
-        "Don't select user if you want to post or reply to a post youself, or if you want a random user."
+        "<small>Copy the post ID to reply to a post<br>"
+        + "Don't select user if you want to post or reply to a post youself, or if you want a random user.</small>"
     )
     with gr.Row():
         with gr.Column(scale=2):

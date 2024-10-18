@@ -4,7 +4,7 @@ human = User("Human", None, None)
 users = [
     User(
         name="Jackie",
-        bio="A 26-year-old girl from Stockholm, passionate about tech and entrepreneurship. Starting a small startup while studying.",
+        bio="A 26 year old girl from Stockholm, who loves tech, and is starting a small startup on the side of her studies. She is friendly and empathic.",
         interests=[
             "tech startup",
             "coding projects",
@@ -14,7 +14,7 @@ users = [
     ),
     User(
         name="Diaz",
-        bio="A 23-year-old guy from California who loves surfing and the car industry. Funny and confident, always up for an adventure.",
+        bio="A 23 year old guy from California, sporty, loves surfing, and works as a sales person at a big car company. He is funny, confident and thoughtful.",
         interests=[
             "surfing adventures",
             "car industry trends",
